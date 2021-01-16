@@ -98,7 +98,7 @@ public class ParamCommons {
             pt = (ParameterizedType )type;
         }catch (Exception e){
         }
-        if(pt == null) throw new RuntimeException("得这格式:public class UserDao extends SqlManager<User>");
+        if(pt == null) throw new RuntimeException("得这格式:public class DemoDao extends SqlManagerImp<User>");
         Type [] actualTypes = pt.getActualTypeArguments();
         return actualTypes[0].getTypeName();
     }

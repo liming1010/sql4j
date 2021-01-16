@@ -4,13 +4,13 @@ package com.tpy.core.manager.queryimp;
 import com.mysql.cj.util.StringUtils;
 import com.tpy.core.manager.*;
 import com.tpy.core.service.DbExecute;
+import com.tpy.core.service.DbExecuteImp;
 import com.tpy.core.service.DbFactory;
-import com.tpy.pojo.table.QueryModel;
+import com.tpy.pojo.model.QueryModel;
 import com.tpy.utils.commons.ParamCommons;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class QueryFun1ManagerImp<T> implements QueryFun1Manager<T> {
@@ -36,8 +36,8 @@ public class QueryFun1ManagerImp<T> implements QueryFun1Manager<T> {
     }
 
     @Override
-    public QueryFun1Manager eq(String clo, String value) {
-        String par = "and " + clo.replaceAll(" ", "") + " = ? ";
+    public QueryFun1Manager eq(String clo, Object value) {
+        String par = "and " + clo + " = ? ";
         Map<Object, String> mx = new HashMap<>();
         mx.put(value, par);
         m.put(clo, mx);
@@ -45,8 +45,26 @@ public class QueryFun1ManagerImp<T> implements QueryFun1Manager<T> {
     }
 
     @Override
+    public QueryFun1Manager gtep(String clos, Object value) {
+        String par = "and " + clos + " >= ? ";
+        Map<Object, String> mx = new HashMap<>();
+        mx.put(value, par);
+        m.put(clos, mx);
+        return this;
+    }
+
+    @Override
+    public QueryFun1Manager lteq(String clos, Object value) {
+        String par = "and " + clos + " <= ? ";
+        Map<Object, String> mx = new HashMap<>();
+        mx.put(value, par);
+        m.put(clos, mx);
+        return this;
+    }
+
+    @Override
     public QueryFun1Manager betweenAnd(String clo, Object a, Object b) {
-        if ((a instanceof Integer && b instanceof Integer)
+        /*if ((a instanceof Integer && b instanceof Integer)
                 || (a instanceof Long && b instanceof Long)
                 || (a instanceof Date && b instanceof Date)) {
             Map<Object, String> mx = new HashMap<>();
@@ -63,12 +81,15 @@ public class QueryFun1ManagerImp<T> implements QueryFun1Manager<T> {
             m.put(clo, mx);
         } else {
             throw new RuntimeException("比较应为Integer, Long, Date类型");
-        }
+        }*/
+        Map<Object, String> mx = new HashMap<>();
+        mx.put(a, "and "+ clo.replaceAll(" ","") +" between ? ");
+        mx.put(b, "and ? ");
         return this;
     }
 
     @Override
-    public QueryFun1Manager like(String clo, String value) {
+    public QueryFun1Manager like(String clo, Object value) {
         String par = "and " + clo.replaceAll(" ", "") + " like ? ";
         Map<Object, String> mx = new HashMap<>();
         mx.put("%" + value + "%", par);
@@ -87,7 +108,7 @@ public class QueryFun1ManagerImp<T> implements QueryFun1Manager<T> {
     @Override
     public QueryFun1Manager groupBy(String... clo) {
         String par = "group by ";
-        for(String s : clo){
+        for(Object s : clo){
             par += s + ",";
         }
         par = par.substring(0, par.length() - 1) + " ";
@@ -167,7 +188,7 @@ public class QueryFun1ManagerImp<T> implements QueryFun1Manager<T> {
     @Override
     public T executeQueryOne() {
         List list = beforeQuery();
-        DbExecute <T> db = DbFactory.getInstance();
+        DbExecuteImp<T> db = DbFactory.getInstance();
         return db.queryOne(sql, list, tx.getClass());
     }
 
@@ -192,12 +213,14 @@ public class QueryFun1ManagerImp<T> implements QueryFun1Manager<T> {
             for (Object key : par.keySet()) {
                 list.add(key);
                 sql += par.get(key);
+                sqlCount += par.get(key);
             }
         }
 
         // funManager条件
         for (Object o : li) {
             sql += o;
+            sqlCount += o;
         }
         return list;
     }

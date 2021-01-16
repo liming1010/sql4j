@@ -4,4 +4,6 @@ public interface InsertFun2Manager {
 
     Long executeInsert();
 
+    Integer executeBatchInsert();
+
 }

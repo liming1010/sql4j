@@ -1,6 +1,8 @@
 package com.tpy.core.proxy;
 
 
+import com.tpy.core.service.tran.TranscationManager;
+import com.tpy.pojo.manager.Autowired;
 import com.tpy.utils.commons.ParamCommons;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -18,6 +20,7 @@ import java.util.stream.Stream;
 public class AuthProxy<T> implements MethodInterceptor {
 
     Logger log = LoggerFactory.getLogger(AuthProxy.class);
+
 
 
     @Override
@@ -38,7 +41,7 @@ public class AuthProxy<T> implements MethodInterceptor {
         System.out.println(replaceString(sql, list));
     }*/
     public void replaceString(Object[] objects, Long st) {
-        if (objects.length == 0) return;
+        if (objects.length == 0 || objects[0] == null) return;
         String sql = objects[0].toString();
         if (objects.length == 1) return;
         /*List<Object> list = (ArrayList)objects[1];

@@ -1,14 +1,17 @@
 package com.tpy.core.service;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.tpy.utils.commons.ClassUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 
 public class DataSourceUtils{
@@ -17,7 +20,9 @@ public class DataSourceUtils{
 
     private static DruidDataSource dataSource;
 
-    public static  void init(String dbname, String dbpwd, String dbip){
+
+    public static void init(String dbname, String dbpwd, String dbip){
+
         //数据源配置
         dataSource = new DruidDataSource();
         dataSource.setUrl("jdbc:mysql://"+dbip+"?useUnicode=true&characterEncoding=utf-8&serverTimezone=GMT&useSSL=false&allowMultiQueries=true");
@@ -33,6 +38,7 @@ public class DataSourceUtils{
         dataSource.setPoolPreparedStatements(true); //缓存PreparedStatement，默认false
         dataSource.setMaxOpenPreparedStatements(20); //缓存PreparedStatement的最大数量，默认-1（不缓存）。大于0时会自动开启缓存PreparedStatement，所以可以省略上一句代码
         log.debug("-----数据库初始化完成-----");
+
     }
 
     /**
@@ -49,6 +55,7 @@ public class DataSourceUtils{
         try {
             return dataSource.getConnection();
         } catch (SQLException e) {
+
             throw new RuntimeException(e);
         }
     }

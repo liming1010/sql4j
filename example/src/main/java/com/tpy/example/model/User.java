@@ -9,6 +9,7 @@ import com.tpy.pojo.table.TableName;
 public class User {
 
     @Primarykey
+            @Column(col = "xx")
     Long id;
 
     String name;

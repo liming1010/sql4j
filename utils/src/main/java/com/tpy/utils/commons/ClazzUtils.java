@@ -2,15 +2,15 @@ package com.tpy.utils.commons;
 
 
 
-import com.tpy.pojo.table.Column;
-import com.tpy.pojo.table.DelFlag;
-import com.tpy.pojo.table.Primarykey;
-import com.tpy.pojo.table.TableName;
+import com.tpy.pojo.manager.Transaction;
+import com.tpy.pojo.table.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.sql.PreparedStatement;
 import java.util.Date;
 import java.util.HashMap;
@@ -109,8 +109,8 @@ public class ClazzUtils<T> {
         Map<String, Object> map = new HashMap<>();
         try {
             for (Field field : declaredFields) {
-
-
+                NotCol notCol = field.getAnnotation(NotCol.class);
+                if(notCol != null) continue;
                 // 如果类型是String
                 if (field.getGenericType().toString().equals("class java.lang.String")) { // 如果type是类类型，则前面包含"class "，后面跟类名
                     /**
@@ -215,4 +215,47 @@ public class ClazzUtils<T> {
         return map;
     }
 
+    public static void copyProperties(Object srouce,Object traget) throws Exception{
+        //获取class对象
+        Class<? extends Object> sCla = srouce.getClass();
+        Class<? extends Object> tCla = traget.getClass();
+        //获取所有的字段属性
+        Field[] fields = sCla.getDeclaredFields();
+        for(Field f:fields){
+            //final，static修饰的字段不拷贝
+            if(Modifier.isFinal(f.getModifiers())&& Modifier.isStatic(f.getModifiers())){
+                continue;
+            }
+            //源对象class的字段授权
+            f.setAccessible(true);
+            //获取目标对象class的同名字段
+            Field field = tCla.getDeclaredField(f.getName());
+            //授权
+            field.setAccessible(true);
+            //给目标对象字段赋值
+            field.set(traget, f.get(srouce));
+        }
+    }
+
+    public static Boolean getTran(){
+        try {
+            StackTraceElement stack[] = Thread.currentThread().getStackTrace();
+            for(StackTraceElement ste : stack) {
+                Class clazz = Class.forName(ste.getClassName());
+                Method methods = clazz.getEnclosingMethod();
+                System.out.println(methods);
+                /*for(Method m : methods){
+                    if(m.getName().equals(ste.getMethodName())){
+                        Transaction annotation = m.getAnnotation(Transaction.class);
+                        if(annotation != null){
+                            return true;
+                        }
+                    }
+                }*/
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

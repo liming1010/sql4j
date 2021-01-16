@@ -1,7 +1,9 @@
 package com.tpy.core.manager.InsertImp;
 
 import com.tpy.core.manager.InsertFun2Manager;
+import com.tpy.core.service.ConnectionPool;
 import com.tpy.core.service.DbExecute;
+import com.tpy.core.service.DbExecuteImp;
 import com.tpy.core.service.DbFactory;
 
 import java.util.List;
@@ -24,9 +26,16 @@ public class InsertFun2ManagerImp implements InsertFun2Manager {
     @Override
     public Long executeInsert() {
         if(valuesBatch == null) throw new RuntimeException("插入参数为空");
-        DbExecute db = DbFactory.getInstance();
-        int[] ints = db.insertBatch(sql, valuesBatch);
-        return ints.length > 0 ? 1L : 0L;
+        DbExecuteImp db = DbFactory.getInstance();
+        Long id = db.insert(sql, valuesBatch.get(0));
+        return id;
+    }
 
+    @Override
+    public Integer executeBatchInsert() {
+        if(valuesBatch == null) throw new RuntimeException("插入参数为空");
+        DbExecuteImp db = DbFactory.getInstance();
+        int[] ints = db.insertBatch(sql, valuesBatch);
+        return ints.length;
     }
 }

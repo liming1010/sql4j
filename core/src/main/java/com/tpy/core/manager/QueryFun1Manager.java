@@ -6,7 +6,29 @@ package com.tpy.core.manager;
  */
 public interface QueryFun1Manager<T> extends QueryFun2Manager<T> {
 
-    QueryFun1Manager eq(String clos, String value);
+    /**
+     *
+     * @param clos
+     * @param value
+     * @return
+     */
+    QueryFun1Manager eq(String clos, Object value);
+
+    /**
+     * 大于等于
+     * @param clos
+     * @param value
+     * @return
+     */
+    QueryFun1Manager gtep(String clos, Object value);
+
+    /**
+     * 小于等于
+     * @param clos
+     * @param value
+     * @return
+     */
+    QueryFun1Manager lteq(String clos, Object value);
 
     /**
      * BETWEEN  AND
@@ -19,7 +41,7 @@ public interface QueryFun1Manager<T> extends QueryFun2Manager<T> {
      * like
      * @param clo
      */
-    QueryFun1Manager like(String clo, String value);
+    QueryFun1Manager like(String clo, Object value);
 
     /**
      * order by

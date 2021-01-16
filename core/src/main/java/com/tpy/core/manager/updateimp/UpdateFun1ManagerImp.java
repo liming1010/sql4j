@@ -3,10 +3,7 @@ package com.tpy.core.manager.updateimp;
 import com.tpy.core.manager.UpdateFun1Manager;
 import com.tpy.core.manager.UpdateFun3Manager;
 import com.tpy.core.manager.UpdateFun4Manager;
-import com.tpy.core.service.DbExecute;
-import com.tpy.core.service.DbFactory;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 public class UpdateFun1ManagerImp<T>  implements UpdateFun1Manager<T> {
